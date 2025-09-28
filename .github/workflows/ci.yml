@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches: [ "main" ]
@@ -14,13 +13,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Use Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: "stable"
+          node-version: "lts/*"
+          cache: "npm"
 
-      - name: Install
-        run: npm ci || npm i
+      - name: Install deps
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm i
+          fi
 
       - name: Test
         run: npm test
